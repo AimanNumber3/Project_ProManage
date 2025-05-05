@@ -11,17 +11,17 @@
 
 ### Role & Akses:
 - **Admin**: Kelola data user & role
-- **Guru (Teacher)**: Buat tugas, lihat progres siswa
-- **Siswa (Student)**: Lihat & selesaikan tugas, atur kalender pribadi
+- **Dosen (Lecturer)**: Buat tugas, lihat progres siswa
+- **Mahasiswa (Student)**: Lihat & selesaikan tugas, atur kalender pribadi
 
 ### Modul:
 - **Tugas (Task)**:
-  - CRUD tugas oleh guru
-  - Lihat tugas & tandai selesai oleh siswa
+  - CRUD tugas oleh dosen
+  - Lihat tugas & tandai selesai oleh mahasiswa
 - **Kalender**:
-  - Jadwal pribadi siswa & pengingat
+  - Jadwal pribadi mahasiswa & pengingat
 - **Role Management**:
-  - Sistem role berbasis middleware (`admin`, `teacher`, `student`)
+  - Sistem role berbasis middleware (`admin`, `lecturer`, `student`)
 - **Autentikasi**:
   - Login, register, proteksi route
 
@@ -88,7 +88,7 @@
 
 ---
 
-### Tabel 6: `calendars`
+### Tabel 6: `lalender`
 | Field      | Tipe Data           | Keterangan                             |
 |------------|---------------------|----------------------------------------|
 | id         | bigIncrements       | Primary key                            |
@@ -109,7 +109,7 @@
 | users   | many-to-many | roles   | Melalui `role_user`                                 |
 | users   | one-to-many  | tasks   | Guru membuat banyak tugas (`created_by`)            |
 | users   | many-to-many | tasks   | Siswa menerima banyak tugas (melalui `task_user`)   |
-| users   | one-to-many  | calendars | Tiap user punya banyak jadwal pribadi             |
+| users   | one-to-many  | kalender | Tiap user punya banyak jadwal pribadi             |
 
 ---
 
