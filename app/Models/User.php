@@ -2,46 +2,60 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Database\Eloquent\Model;
+use App\Models\Project;
+use App\Models\Task;
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable;
 
-    protected $fillable = ['name', 'email', 'password'];
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
+     */
+    protected $fillable = [
+        'name',
+        'email',
+        'password',
+        'role', // jika kamu menambahkan field role di migration
+    ];
 
-    // Relasi ke roles
-    public function roles()
+    /**
+     * The attributes that should be hidden for arrays and JSON.
+     *
+     * @var array<int, string>
+     */
+    protected $hidden = [
+        'password',
+        'remember_token',
+    ];
+
+    /**
+     * The attributes that should be cast to native types.
+     *
+     * @var array<string, string>
+     */
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+        'password' => 'hashed',
+    ];
+
+    // Relasi ke projects (jika pengguna bisa membuat project)
+    public function projects()
     {
-        return $this->belongsToMany(Role::class);
+        return $this->hasMany(Project::class);
     }
 
-    // Relasi ke tugas yang dibuat (jika dosen)
-    public function createdTasks()
-    {
-        return $this->hasMany(Task::class, 'created_by');
-    }
-
-    // Relasi ke tugas yang dikerjakan (jika mahasiswa)
+    // Relasi ke tasks (jika pengguna bisa ditugaskan)
     public function tasks()
     {
-        return $this->belongsToMany(Task::class)
-                    ->withPivot(['is_completed', 'completed_at'])
-                    ->withTimestamps();
-    }
-
-    // Relasi ke kalender pribadi
-    public function calendars()
-    {
-        return $this->hasMany(Kalender::class);
-    }
-
-    // Cek apakah user punya role tertentu
-    public function hasRole($role)
-    {
-        return $this->roles()->where('name', $role)->exists();
+        return $this->hasMany(Task::class);
     }
 }
